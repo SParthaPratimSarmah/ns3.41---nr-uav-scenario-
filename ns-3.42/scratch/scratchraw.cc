@@ -125,7 +125,7 @@ DeployRandomUes(NodeContainer& ueContainer, uint32_t numUes)
 
     InternetStackHelper internet;
     Ipv4AddressHelper ipv4;
-    ipv4.SetBase("12.0.0.0", "255.255.255.0");
+    ipv4.SetBase("20.0.0.0", "255.255.255.0");
 
     for (uint32_t i = 0; i < numUes; ++i)
     {
@@ -147,12 +147,15 @@ DeployUavs()
 {
     MobilityHelper mobility;
 
-    Ptr<RandomRectanglePositionAllocator> positionAlloc =
-        CreateObject<RandomRectanglePositionAllocator>();
-    positionAlloc->SetAttribute("X", StringValue("ns3::UniformRandomVariable[Min=0.0|Max=100.0]"));
-    positionAlloc->SetAttribute("Y", StringValue("ns3::UniformRandomVariable[Min=0.0|Max=100.0]"));
+    // Create random number generators for x and y coordinates
+    Ptr<UniformRandomVariable> xRandom = CreateObject<UniformRandomVariable>();
+    xRandom->SetAttribute("Min", DoubleValue(0.0));
+    xRandom->SetAttribute("Max", DoubleValue(100.0));
 
-    mobility.SetPositionAllocator(positionAlloc);
+    Ptr<UniformRandomVariable> yRandom = CreateObject<UniformRandomVariable>();
+    yRandom->SetAttribute("Min", DoubleValue(0.0));
+    yRandom->SetAttribute("Max", DoubleValue(100.0));
+
     mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
 
     for (uint32_t i = 0; i < fronthaulGnbContainer.GetN(); ++i)
@@ -161,9 +164,26 @@ DeployUavs()
         Ptr<Node> bGnb = backhaulGnbContainer.Get(i);
         Ptr<Node> ueUav = ueUavContainer.Get(i);
 
+        // Generate random x and y positions
+        double x = xRandom->GetValue();
+        double y = yRandom->GetValue();
+
+        // Install mobility model
         mobility.Install(fGnb);
         mobility.Install(bGnb);
         mobility.Install(ueUav);
+
+        // Set positions with different z coordinates
+        Ptr<MobilityModel> fGnbMobility = fGnb->GetObject<MobilityModel>();
+        fGnbMobility->SetPosition(
+            Vector(x, y, gNbHeight)); // Example z-coordinate for fronthaul gNB
+
+        Ptr<MobilityModel> bGnbMobility = bGnb->GetObject<MobilityModel>();
+        bGnbMobility->SetPosition(
+            Vector(x, y, gNbHeight + 10.0)); // Different z-coordinate for backhaul gNB
+
+        Ptr<MobilityModel> ueUavMobility = ueUav->GetObject<MobilityModel>();
+        ueUavMobility->SetPosition(Vector(x, y, ueHeight)); // Example z-coordinate for UE/UAV
     }
 }
 
@@ -176,8 +196,13 @@ main(int argc, char* argv[])
     CommandLine cmd;
     cmd.Parse(argc, argv);
 
+    // Disable all logs from NetAnim
+    LogComponentDisable("NetAnim", (LogLevel)0);
+
     UAV uav1;
     UAV uav2;
+    UAV uav3;
+    UAV uav4;
 
     DeployUavs();
 
@@ -304,8 +329,32 @@ main(int argc, char* argv[])
 
 
     nrHelper4b->AttachToClosestEnb(ueUavNetDev, backhaulEnbNetDev);
+    for (uint32_t i = 0; i < ueUavNetDev.GetN(); ++i)
+    {
+        Ptr<NrUeNetDevice> ueDevice = ueUavNetDev.Get(i)->GetObject<NrUeNetDevice>();
+        Ptr<Node> ueNode = ueDevice->GetNode();
+        Ptr<const NrGnbNetDevice> enbDevice = ueDevice->GetTargetEnb();
+        Ptr<Node> enbNode = enbDevice->GetNode();
+        std::cout << "UE " << ueNode->GetId() << " is attached to gNB (backhaul) "
+                  << enbNode->GetId() << std::endl;
+    }
 
     nrHelper4f->AttachToClosestEnb(randomUeNetDev, fronthaulEnbNetDev);
+
+    for (uint32_t i = 0; i < randomUeNetDev.GetN(); ++i)
+    {
+        Ptr<NrUeNetDevice> ueDevice = randomUeNetDev.Get(i)->GetObject<NrUeNetDevice>();
+        Ptr<const NrGnbNetDevice> enbDevice = ueDevice->GetTargetEnb();
+        Ptr<Node> ueNode = ueDevice->GetNode();
+        Ptr<Node> enbNode = enbDevice->GetNode();
+        std::cout << "UE " << ueNode->GetId() << " is attached to gNB (fronthaul) "
+                  << enbNode->GetId() << std::endl;
+    }
+
+    uav1.PrintPositions();
+    uav2.PrintPositions();
+    uav3.PrintPositions();
+    uav4.PrintPositions();
 
     // Add UDP Echo Server and Client
     uint16_t port = 9;
