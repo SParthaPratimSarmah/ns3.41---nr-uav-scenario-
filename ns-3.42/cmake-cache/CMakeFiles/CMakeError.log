@@ -1,0 +1,68 @@
+Performing C++ SOURCE FILE Test HAVE_UINT128_T failed with the following output:
+Change Dir: /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_2fcd9 && [1/2] Building CXX object CMakeFiles/cmTC_2fcd9.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_2fcd9.dir/src.cxx.o 
+/usr/bin/c++ -DHAVE_UINT128_T  -fPIE -std=c++20 -o CMakeFiles/cmTC_2fcd9.dir/src.cxx.o -c /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx: In function ‘int main()’:
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx:4:18: error: ‘uint128_t’ was not declared in this scope; did you mean ‘uint8_t’?
+    4 |             if ((uint128_t *) 0) return 0;
+      |                  ^~~~~~~~~
+      |                  uint8_t
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx:4:29: error: expected primary-expression before ‘)’ token
+    4 |             if ((uint128_t *) 0) return 0;
+      |                             ^
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx:4:30: error: expected ‘)’ before numeric constant
+    4 |             if ((uint128_t *) 0) return 0;
+      |                ~             ^~
+      |                              )
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/src.cxx:5:25: error: ‘uint128_t’ was not declared in this scope; did you mean ‘uint8_t’?
+    5 |             if (sizeof (uint128_t)) return 0;
+      |                         ^~~~~~~~~
+      |                         uint8_t
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <stdint.h>
+       int main()
+         {
+            if ((uint128_t *) 0) return 0;
+            if (sizeof (uint128_t)) return 0;
+            return 1;
+         }
+Determining if files boost/units/quantity.hpp;boost/units/systems/si.hpp exist failed with the following output:
+Change Dir: /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_96ca2 && [1/2] Building CXX object CMakeFiles/cmTC_96ca2.dir/HAVE_BOOST_UNITS.cpp.o
+FAILED: CMakeFiles/cmTC_96ca2.dir/HAVE_BOOST_UNITS.cpp.o 
+/usr/bin/c++   -fPIE -std=c++20 -o CMakeFiles/cmTC_96ca2.dir/HAVE_BOOST_UNITS.cpp.o -c /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CheckIncludeFiles/HAVE_BOOST_UNITS.cpp
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CheckIncludeFiles/HAVE_BOOST_UNITS.cpp:2:10: fatal error: boost/units/quantity.hpp: No such file or directory
+    2 | #include <boost/units/quantity.hpp>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+Source:
+/* */
+#include <boost/units/quantity.hpp>
+#include <boost/units/systems/si.hpp>
+
+
+int main(void){return 0;}
+
+Determining if the include file net/netmap_user.h exists failed with the following output:
+Change Dir: /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_3585c && [1/2] Building C object CMakeFiles/cmTC_3585c.dir/CheckIncludeFile.c.o
+FAILED: CMakeFiles/cmTC_3585c.dir/CheckIncludeFile.c.o 
+/usr/bin/cc   -fPIE -o CMakeFiles/cmTC_3585c.dir/CheckIncludeFile.c.o -c /home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+/home/jarvis/Documents/ns-allinone-3.42/ns-3.42/cmake-cache/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: net/netmap_user.h: No such file or directory
+    1 | #include <net/netmap_user.h>
+      |          ^~~~~~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+
